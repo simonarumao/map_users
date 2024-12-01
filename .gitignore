@@ -1,0 +1,50 @@
+.vercel
+# Byte-compiled files
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment
+venv/
+env/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Photos and videos
+*.png
+*.jpg
+*.jpeg
+*.bmp
+*.gif
+*.mp4
+
+# Configuration and log files
+*.log
+*.ini
+*.env
+
+# Streamlit-specific files
+.streamlit/
+.cache/
+.history/
+
+# Miscellaneous
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Unrelated Python files (customize as needed)
+# Exclude specific Python files by name
+unrelated_script.py
+test_script.py
+
+# Ignore all Python files in a specific folder
+ignored_folder/*.py
+
+# Ignore other large or unnecessary files
+*.csv
+*.json
+*.zip

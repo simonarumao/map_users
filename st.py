@@ -91,7 +91,6 @@ while cap.isOpened():
 
             if current_time - last_photo_time >= photo_interval:
                 angle = calculate_angle(previous_x_pred, previous_y_pred, predicted[0], predicted[1])
-                capture_photo(frame, cx, cy, angle)
                 last_photo_time = current_time
 
             if enable_sound and not is_sound_playing:

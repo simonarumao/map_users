@@ -54,15 +54,15 @@ def send_trigger(lat, lng):
     except Exception as e:
         st.sidebar.error(f"Error sending trigger: {e}")
 
-# Function to capture a photo
-def capture_photo(frame, cx, cy, angle):
-    font = cv2.FONT_HERSHEY_SIMPLEX
-    angle_text = f"Angle: {angle:.2f}°"
-    cv2.putText(frame, angle_text, (cx - 50, cy - 20), font, 0.8, (255, 255, 255), 2, cv2.LINE_AA)
-    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
-    filename = f"photo_{timestamp}.png"
-    cv2.imwrite(filename, frame)
-    st.sidebar.success(f"Captured photo: {filename}")
+# # Function to capture a photo
+# def capture_photo(frame, cx, cy, angle):
+#     font = cv2.FONT_HERSHEY_SIMPLEX
+#     angle_text = f"Angle: {angle:.2f}°"
+#     cv2.putText(frame, angle_text, (cx - 50, cy - 20), font, 0.8, (255, 255, 255), 2, cv2.LINE_AA)
+#     timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+#     filename = f"photo_{timestamp}.png"
+#     cv2.imwrite(filename, frame)
+#     st.sidebar.success(f"Captured photo: {filename}")
 
 # Start video capture
 cap = cv2.VideoCapture('ball.mp4')

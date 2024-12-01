@@ -47,7 +47,10 @@ def calculate_angle(prev_x, prev_y, curr_x, curr_y):
 def send_trigger(lat, lng):
     try:
         response = requests.post(FLASK_SERVER_URL, json={"latitude": lat, "longitude": lng})
-        st.sidebar.write(response.json())
+        if response.status_code == 200:
+            st.sidebar.write(response.json())  # Only parse if status code is 200
+        else:
+            st.sidebar.error(f"Error: Received status code {response.status_code}")
     except Exception as e:
         st.sidebar.error(f"Error sending trigger: {e}")
 

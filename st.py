@@ -50,7 +50,7 @@ def send_trigger(lat, lng):
         if response.status_code == 200:
             st.sidebar.write(response.json())  # Only parse if status code is 200
         else:
-            st.sidebar.error(f"Error: Received status code {response.status_code}")
+            st.sidebar.error(f"Error: Received status code {response.status_code} Response: {response.text}")
     except Exception as e:
         st.sidebar.error(f"Error sending trigger: {e}")
 

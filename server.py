@@ -21,7 +21,7 @@ def trigger_alert():
     if latitude and longitude:
         # Add to locations list
         locations.append({"latitude": latitude, "longitude": longitude})
-        return jsonify({"message": "Alert triggered!", "latitude": latitude, "longitude": longitude})
+        return jsonify({"message": "Alert triggered!", "latitude": latitude, "longitude": longitude}),200
     else:
         return jsonify({"error": "Invalid data"}), 400
 

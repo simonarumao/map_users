@@ -8,7 +8,7 @@ from kalmanfilter import KalmanFilter
 from orange_detector import OrangeDetector  # Replace with your object detector import
 
 # Flask server URL
-FLASK_SERVER_URL = "https://nukemap-ds020usry-simona-rumaos-projects.vercel.app/trigger"
+FLASK_SERVER_URL = "https://nukemap.vercel.app/trigger"
 
 # Streamlit setup
 st.title("Object Tracking and Detection with Kalman Filter")

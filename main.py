@@ -8,10 +8,31 @@ import math
 import requests  # For triggering Flask server
 from kalmanfilter import KalmanFilter
 from orange_detector import OrangeDetector  # Replace with your object detector import
+import threading
+import time
 
 # Flask server URL
-FLASK_SERVER_URL = "http://127.0.0.1:5000/trigger"
+FLASK_SERVER_URL = "http://localhost:3000"
 
+# Heartbeat function to notify server that main.py is active
+def send_heartbeat():
+    try:
+        response = requests.post(f"{FLASK_SERVER_URL}/heartbeat")
+        print(response.json())
+    except Exception as e:
+        print("Error sending heartbeat:", e)
+
+# Send heartbeat periodically (every 5 seconds)
+def heartbeat_loop():
+    while True:
+        send_heartbeat()
+        time.sleep(5)  # Send heartbeat every 5 seconds
+
+# Start heartbeat thread
+heartbeat_thread = threading.Thread(target=heartbeat_loop, daemon=True)
+heartbeat_thread.start()
+
+# Load video capture
 cap = cv2.VideoCapture('ball.mp4')  # Use your video file here
 
 # Load Kalman filter
@@ -21,8 +42,8 @@ kf = KalmanFilter()
 od = OrangeDetector()
 
 # Initialize pygame for sound
-pygame.mixer.init()
-sound = pygame.mixer.Sound("alert.mp3")  # Replace with the actual sound file path
+# pygame.mixer.init()
+# sound = pygame.mixer.Sound("alert.mp3")  # Replace with the actual sound file path
 
 # Initialize variables
 previous_x_pred = None
@@ -47,10 +68,26 @@ def calculate_angle(prev_x, prev_y, curr_x, curr_y):
 # Function to send trigger to Flask server
 def send_trigger(lat, lng):
     try:
-        response = requests.post(FLASK_SERVER_URL, json={"latitude": lat, "longitude": lng})
+        response = requests.post(f"{FLASK_SERVER_URL}/trigger", json={"latitude": lat, "longitude": lng})
         print(response.json())
     except Exception as e:
         print("Error sending trigger:", e)
+def send_photo_to_node(frame, angle):
+    try:
+        # Encode the image to a memory buffer
+        _, buffer = cv2.imencode('.png', frame)
+
+        # Prepare the payload
+        files = {
+            'photo': ('image.png', buffer.tobytes(), 'image/png'),
+            'angle': (None, f"{angle:.2f}")
+        }
+
+        # Send the image to the server
+        response = requests.post(f"{FLASK_SERVER_URL}/upload-photos", files=files)
+        print(f"Photo sent successfully: {response.json()}")
+    except Exception as e:
+        print("Error sending photo to Node.js server:", e)
 
 # Function to capture a photo with the angle text
 def capture_photo(frame, cx, cy, angle):
@@ -58,11 +95,8 @@ def capture_photo(frame, cx, cy, angle):
     angle_text = f"Angle: {angle:.2f}°"
     cv2.putText(frame, angle_text, (cx - 50, cy - 20), font, 0.8, (255, 255, 255), 2, cv2.LINE_AA)
 
-    # Save the image with timestamp
-    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
-    filename = f"photo_{timestamp}.png"
-    cv2.imwrite(filename, frame)
-    print(f"Captured photo: {filename}")
+    # Send the image directly to the Node.js server
+    send_photo_to_node(frame, angle)
 
 # Live update function
 def update(frame):
@@ -98,13 +132,6 @@ def update(frame):
             last_photo_time = current_time  # Update last photo time
 
         # Play sound when moving down
-        if not is_sound_playing:
-            sound.play()
-            is_sound_playing = True
-    elif previous_y_pred is not None and predicted[1] < previous_y_pred:
-        if is_sound_playing:
-            pygame.mixer.stop()
-            is_sound_playing = False
 
     # Update previous positions
     previous_x_pred = predicted[0]

@@ -1,13 +1,12 @@
 import cv2
 import numpy as np
-import pygame
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from datetime import datetime
 import math
-import requests  # For triggering Flask server
+import requests  
 from kalmanfilter import KalmanFilter
-from orange_detector import OrangeDetector  # Replace with your object detector import
+from orange_detector import OrangeDetector  
 import threading
 import time
 
@@ -33,17 +32,15 @@ heartbeat_thread = threading.Thread(target=heartbeat_loop, daemon=True)
 heartbeat_thread.start()
 
 # Load video capture
-cap = cv2.VideoCapture('ball.mp4')  # Use your video file here
+cap = cv2.VideoCapture('abc.mp4')  # Use your video file here
 
 # Load Kalman filter
 kf = KalmanFilter()
 
-# Load Orange Detector
+
 od = OrangeDetector()
 
-# Initialize pygame for sound
-# pygame.mixer.init()
-# sound = pygame.mixer.Sound("alert.mp3")  # Replace with the actual sound file path
+
 
 # Initialize variables
 previous_x_pred = None
@@ -93,7 +90,7 @@ def send_photo_to_node(frame, angle):
 def capture_photo(frame, cx, cy, angle):
     font = cv2.FONT_HERSHEY_SIMPLEX
     angle_text = f"Angle: {angle:.2f}°"
-    cv2.putText(frame, angle_text, (cx - 50, cy - 20), font, 0.8, (255, 255, 255), 2, cv2.LINE_AA)
+    cv2.putText(frame, angle_text, (cx - 50, cy - 20), font, 0.8, (0,0,255), 2, cv2.LINE_AA)
 
     # Send the image directly to the Node.js server
     send_photo_to_node(frame, angle)
@@ -158,7 +155,7 @@ def update(frame):
         # Calculate and display the angle
         angle = calculate_angle(previous_x_pred, previous_y_pred, cx, cy)
         angle_text = f"Angle: {angle:.2f}°"
-        cv2.putText(frame, angle_text, (int(predicted[0]) + 10, int(predicted[1]) - 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2, cv2.LINE_AA)
+        cv2.putText(frame, angle_text, (int(predicted[0]) + 10, int(predicted[1]) - 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255,0,0), 2, cv2.LINE_AA)
 
     # Update previous positions
     previous_x_pred = predicted[0]
